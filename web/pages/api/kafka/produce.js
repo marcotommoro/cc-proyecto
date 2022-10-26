@@ -1,10 +1,10 @@
-import { Kafka } from "kafkajs";
+import { Kafka, Partitioners } from "kafkajs";
 
 const initializeKafka = () => {
   try {
     const kafka = new Kafka({
       clientId: "web",
-      brokers: ["broker:9092", "localhost:9092"],
+      brokers: ["broker:9092"],
     });
     console.log("ciao", kafka);
     return kafka;
@@ -13,29 +13,36 @@ const initializeKafka = () => {
   }
 };
 
-const produceMessage = async (kafka) => {
+const produceMessage = async (kafka, message) => {
   if (!kafka) return;
 
-  //   const producer = kafka.producer({
-  //     createPartitioner: Partitioners.LegacyPartitioner,
-  //   });
+  const producer = kafka.producer({
+    createPartitioner: Partitioners.LegacyPartitioner,
+  });
 
-  try {
-    const producer = kafka.producer();
-
-    await producer.connect();
-    // await producer.send({
-    //   topic: "test-topic",
-    //   messages: [{ value: "Hola tio!" }],
-    // });
-  } catch (error) {
-    console.error("conooo", error);
-  }
+  await producer.connect();
+  await producer.send({
+    topic: process.env.CONSUMER_TOPIC,
+    messages: [{ value: message }],
+  });
 };
 
 export default async function handler(req, res) {
-  const kafka = initializeKafka();
-  await produceMessage(kafka);
+  const {
+    method,
+    body: { message },
+  } = req;
 
-  res.status(200).json({ name: "John Doe" });
+  if (method !== "POST") return res.status(403).json({ message: "Forbidden" });
+
+  const kafka = initializeKafka();
+
+  try {
+    await produceMessage(kafka, message);
+
+    res.status(200).json({ name: `Hello ${message}` });
+  } catch (error) {
+    console.log(error);
+    res.status(200).json({ name: "fuck" });
+  }
 }

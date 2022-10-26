@@ -1,23 +1,5 @@
 version: '2'
 services:
-  # zookeeper:
-  #   image: wurstmeister/zookeeper:latest
-  #   ports:
-  #     - "2181:2181"
-  # kafka:
-  #   image: wurstmeister/kafka:2.11-1.1.1
-  #   ports:
-  #     - "9092:9092"
-  #   links:
-  #     - zookeeper
-  #   environment:
-  #     KAFKA_ADVERTISED_HOST_NAME: localhost
-  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-  #     KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
-  #     KAFKA_DELETE_TOPIC_ENABLE: 'true'
-  #     KAFKA_CREATE_TOPICS: "topic-test:1:1"
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
   zookeeper:
     image: confluentinc/cp-zookeeper
     ports:
@@ -36,10 +18,11 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,PLAINTEXT_HOST://0.0.0.0:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,PLAINTEXT_HOST://localhost:29092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
   web-nextjs:
     build: ./web
     ports:
@@ -51,22 +34,13 @@ services:
       KAFKA_BROKER: broker:29092
       KAFKA_TOPIC: test
     depends_on:
-      - kafka
-
-
-  # server-express:
-  #   build: ./server
-  #   ports:
-  #     - 3001:3001
-  #   volumes:
-  #     - .:/app
-  #     - /app/node_modules
-  #   environment:
-  #     - KAFKA_BROKER_LIST=kafka:29092
-  #     - KAFKA_TOPIC=topic
-  #     - KAFKA_GROUP_ID=group
-  #     - KAFKA_CLIENT_ID=client
-  #     - KAFKA_CONSUMER=true
-  #     - KAFKA_PRODUCER=true
-  #   container_name: server-express
-  #   command: npm run dev
+      - broker
+  server-express:
+    build: ./server
+    ports:
+      - 5001:5001
+    volumes:
+      - ./server:/app
+    container_name: server-express
+    depends_on:
+      - broker

@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 
 export default function Home() {
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState("bella zio");
 
   // useEffect(() => {
   //   axios.get("/api/hello").then((res) => {
@@ -12,7 +12,7 @@ export default function Home() {
   // }, []);
 
   const handleProduce = async () => {
-    axios.get("/api/kafka/produce").then((res) => {
+    axios.post("/api/kafka/produce", { message }).then((res) => {
       console.log("hola", res.data);
     });
   };
