@@ -1,31 +1,8 @@
-import dotenv from "dotenv";
 import { consumeMessages } from "./kafka/utils.js";
-dotenv.config();
-
-// const app = express();
-
-// app.get("/", async (req, res) => {
-//   const producer = kafka.producer({
-//     createPartitioner: Partitioners.LegacyPartitioner,
-//   });
-//   await producer.connect();
-//   const resss = await producer.send({
-//     topic: "test-topic",
-//     messages: [
-//       {
-//         value: "Hello KafkaJS user!",
-//       },
-//     ],
-//   });
-
-//   console.log(`Sent successfully ${resss.values}`);
-//   res.send("Sent!");
-// });
-
-// app.listen(port, () => {
-//   console.log(`[server]: Server is running at https://localhost:${port}`);
-// });
 
 (async () => {
-  await consumeMessages(process.env.CONSUMER_TOPIC);
+  console.log("Starting server");
+  console.log("FE_TO_BE_TOPIC", process.env.FE_TO_BE_TOPIC);
+  console.log("BE_TO_FE_TOPIC", process.env.BE_TO_FE_TOPIC);
+  await consumeMessages(process.env.FE_TO_BE_TOPIC);
 })();

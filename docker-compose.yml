@@ -37,6 +37,8 @@ services:
       - broker
   server-express:
     build: ./server
+    env_file:
+      - ./server/.env
     ports:
       - 5001:5001
     volumes:

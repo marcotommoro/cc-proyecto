@@ -1,17 +1,6 @@
-import { Kafka, Partitioners } from "kafkajs";
-
-const initializeKafka = () => {
-  try {
-    const kafka = new Kafka({
-      clientId: "web",
-      brokers: ["broker:9092"],
-    });
-    console.log("ciao", kafka);
-    return kafka;
-  } catch (error) {
-    console.log(error);
-  }
-};
+import { FE_TO_BE_TOPIC } from "@env";
+import { initializeKafka } from "@utils/kafka.js";
+import { Partitioners } from "kafkajs";
 
 const produceMessage = async (kafka, message) => {
   if (!kafka) return;
@@ -22,7 +11,7 @@ const produceMessage = async (kafka, message) => {
 
   await producer.connect();
   await producer.send({
-    topic: process.env.CONSUMER_TOPIC,
+    topic: FE_TO_BE_TOPIC,
     messages: [{ value: message }],
   });
 };
