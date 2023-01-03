@@ -1,48 +1,83 @@
-version: '2'
+version: "3.7"
+
 services:
-  zookeeper:
-    image: confluentinc/cp-zookeeper
+  kafka:
+    container_name: kafka
+    restart: always
+    image: confluentinc/cp-kafka:latest
     ports:
-      - 2181:2181
+      - "9092:9092"
     environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    container_name: zookeeper
-  broker:
-    image: confluentinc/cp-kafka
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - zookeeper
+
+  zookeeper:
+    container_name: zookeeper
+    image: confluentinc/cp-zookeeper:latest
     ports:
-      - 29092:29092
-    container_name: broker
+      - "2181:2181"
     environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,PLAINTEXT_HOST://localhost:29092
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
-  web-nextjs:
-    build: ./web
+      - ZOOKEEPER_CLIENT_PORT=2181
+
+  # postgres-app:
+  #   container_name: postgres-app
+  #   image: postgres:latest
+  #   environment:
+  #     - POSTGRES_USER=myuser
+  #     - POSTGRES_PASSWORD=mypass
+  #     - POSTGRES_DB=mydb
+  #   volumes:
+  #     - "postgres_app_data:/var/lib/postgresql/data"
+
+  # postgres-keycloak:
+  #   container_name: postgres-keycloak
+  #   image: postgres:latest
+  #   environment:
+  #     - POSTGRES_USER=keycloak
+  #     - POSTGRES_PASSWORD=password
+  #     - POSTGRES_DB=keycloak
+  #   volumes:
+  #     - "postgres_keycloak_data:/var/lib/postgresql/data"
+
+  # keycloak:
+  #   container_name: keycloak
+  #   image: jboss/keycloak
+  #   environment:
+  #     - KEYCLOAK_USER=admin
+  #     - KEYCLOAK_PASSWORD=admin
+  #     - DB_VENDOR=POSTGRES
+  #     - DB_ADDR=postgres
+  #     - DB_PORT=5432
+  #     - DB_DATABASE=keycloak
+  #     - DB_USER=keycloak
+  #     - DB_PASSWORD=password
+  #   ports:
+  #     - "8080:8080"
+
+  # pgadmin:
+  #   container_name: pgadmin
+  #   image: dpage/pgadmin4
+  #   environment:
+  #     - PGADMIN_DEFAULT_EMAIL=my@email.com
+  #     - PGADMIN_DEFAULT_PASSWORD=mypass
+  #   ports:
+  #     - "5050:5050"
+
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    restart: always
     ports:
-      - 3000:3000
-    volumes:
-      - ./web:/app
-    container_name: web-nextjs
+      - 9080:8080
+    depends_on:
+      - zookeeper
+      - kafka
     environment:
-      KAFKA_BROKER: broker:29092
-      KAFKA_TOPIC: test
-    depends_on:
-      - broker
-  server-express:
-    build: ./server
-    env_file:
-      - ./server/.env
-    ports:
-      - 5001:5001
-    volumes:
-      - ./server:/app
-    container_name: server-express
-    depends_on:
-      - broker
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      KAFKA_CLUSTERS_0_METRICS_PORT: 9997
