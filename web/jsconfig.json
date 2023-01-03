@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@env": ["envs.jsx"],
-      "@utils/*": ["utils/*"]
-    }
-  }
-}

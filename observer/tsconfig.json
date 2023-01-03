@@ -1,0 +1,6 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "lib": ["ES6", "es2015", "dom"]
+  }
+}
