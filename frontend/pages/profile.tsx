@@ -3,14 +3,14 @@ import { useEffect, useState } from "react";
 
 interface User {
   email: string;
-  token: string | undefined;
-  authenticated: boolean;
+  token?: string | undefined;
+  authenticated?: boolean;
   name?: string;
 }
 
 export default function Profile() {
   const [keycloak, setKeycloak] = useState<Keycloak>();
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<User | undefined>();
 
   useEffect(() => {
     const _keycloak = new Keycloak(initOptions);
@@ -25,8 +25,8 @@ export default function Profile() {
           console.log("Not authenticated");
         } else {
           console.log("Authenticated");
+          console.log(_keycloak);
           _keycloak.loadUserInfo().then((userInfo) => {
-            console.log(userInfo);
             setUser({
               authenticated: true,
               // @ts-ignore
@@ -35,15 +35,26 @@ export default function Profile() {
               name: userInfo.given_name,
               token: _keycloak.idToken,
             });
+            console.log(_keycloak.idToken);
           });
         }
       });
+
+    setInterval(async () => {
+      const res = await _keycloak.updateToken(70);
+      if (!res) return;
+    }, 7000);
+
+    setTimeout(() => {
+      if (!user) handleLogin();
+      console.log(user);
+    }, 2000);
 
     setKeycloak(_keycloak);
   }, []);
 
   const logUser = () => {
-    console.log(user);
+    console.log(keycloak);
   };
 
   const handleLogin = () => {
