@@ -1,3 +1,4 @@
+import axios from "axios";
 import Keycloak from "keycloak-js";
 import { useEffect, useState } from "react";
 
@@ -43,6 +44,9 @@ export default function Profile() {
     setInterval(async () => {
       const res = await _keycloak.updateToken(70);
       if (!res) return;
+      console.log("Token refreshed");
+      // @ts-ignore
+      setUser({ ...user, token: _keycloak.idToken });
     }, 7000);
 
     setTimeout(() => {
@@ -53,8 +57,16 @@ export default function Profile() {
     setKeycloak(_keycloak);
   }, []);
 
-  const logUser = () => {
-    console.log(keycloak);
+  const authConnection = () => {
+    axios.post(
+      "http://127.0.0.1:5001/auth/check-user",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${user?.token}`,
+        },
+      }
+    );
   };
 
   const handleLogin = () => {
@@ -71,11 +83,16 @@ export default function Profile() {
     <>
       <div>
         <h1>PROFILE</h1>
-        <button onClick={handleLogin}>LOGIN</button>
-        <br />
-        <button onClick={handleLogOut}>LOGOUT</button>
-        <br />
-        <button onClick={logUser}>LOG USER</button>
+        {!user || !user.token ? (
+          <button onClick={handleLogin}>LOGIN</button>
+        ) : (
+          <>
+            <br />
+            <button onClick={handleLogOut}>LOGOUT</button>
+            <br />
+            <button onClick={authConnection}>Check auth connection</button>
+          </>
+        )}
       </div>
     </>
   );
@@ -84,7 +101,7 @@ export default function Profile() {
 // server side rendering
 
 let initOptions = {
-  url: "http://127.0.0.1:8080",
+  url: "https://df45-178-237-233-211.ngrok.io",
   realm: "realm_app",
   clientId: "next-app",
 };

@@ -118,9 +118,11 @@ services:
     build: ./broker
     restart: always
     ports:
-      - 3001:3001
+      - 5001:5001
     depends_on:
       - kafka
       - postgres-app
+    env_file:
+      - ./broker/.env
     volumes:
       - ./broker:/app
