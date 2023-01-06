@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { validateToken } from "../utils/keycloak";
+import { setObserverSettings } from "../utils/mongodb";
 
 /**
  * Encapsulates the routes
@@ -31,6 +32,31 @@ const routes = async (fastify: FastifyInstance, options: Object) => {
       }
 
       return reply.code(200).send({ msg: `Hello Mr. ${user.name}` });
+    }
+  );
+
+  fastify.post(
+    "/change-observer-setting",
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const {
+          uppercase,
+          stringBefore,
+          stringAfter,
+          reverse,
+        }: {
+          uppercase: boolean;
+          stringBefore: string;
+          stringAfter: string;
+          reverse: boolean;
+        } = request.body as any;
+
+        setObserverSettings({ uppercase, stringBefore, stringAfter, reverse });
+
+        return reply.code(200).send({ msg: "Settings updated" });
+      } catch (error) {
+        return reply.code(500).send({ error: `Server error: ${error}` });
+      }
     }
   );
 };

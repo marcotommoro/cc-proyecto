@@ -2,3 +2,5 @@ node_modules
 pgadmin
 postgres_app_data
 postgres_keycloak_data
+.env*
+envs
