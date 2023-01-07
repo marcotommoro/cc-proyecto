@@ -1,11 +1,11 @@
-import { FastifyInstance } from "fastify";
-import { Db, MongoClient } from "mongodb";
+import { FastifyInstance } from 'fastify';
+import { Db, MongoClient } from 'mongodb';
 
 let db: Db;
 
 export const initializeMongo = async (fastify: FastifyInstance | undefined) => {
   if (fastify)
-    fastify.log.info("Connecting to MongoDB" + process.env.MONGO_URL);
+    fastify.log.info('Connecting to MongoDB' + process.env.MONGO_URL);
 
   const {
     MONGO_PARAMS,
@@ -24,18 +24,18 @@ export const initializeMongo = async (fastify: FastifyInstance | undefined) => {
     !MONGO_COLLECTION
   )
     fastify?.log.error(
-      "Cannot initialize Mongodb. Missing MongoDB env variables"
+      'Cannot initialize Mongodb. Missing MongoDB env variables',
     );
 
   // @ts-ignore
   const client = new MongoClient(
-    `mongodb://${MONGO_USER}:${MONGO_PASSWD}@${MONGO_HOSTNAME}:27017/${MONGO_DB}?${MONGO_PARAMS}`
+    `mongodb://${MONGO_USER}:${MONGO_PASSWD}@${MONGO_HOSTNAME}:27017/${MONGO_DB}?${MONGO_PARAMS}`,
   );
 
   try {
     await client.connect();
     const _db = client.db(MONGO_DB);
-    if (fastify) fastify.log.info("Connected to MongoDB");
+    if (fastify) fastify.log.info('Connected to MongoDB');
 
     db = _db;
   } catch (error) {
@@ -59,7 +59,8 @@ export const getObserverSettings = async () => {
 
     const collection = db.collection(MONGO_COLLECTION);
 
-    return collection.findOne({});
+    const data = await collection.findOne({});
+    return;
   } catch (error) {
     return null;
   }
@@ -76,7 +77,7 @@ export const setObserverSettings = async (settings: any) => {
     return collection.updateOne(
       { _id: 0 },
       { $set: settings },
-      { upsert: true }
+      { upsert: true },
     );
   } catch (error) {
     return null;

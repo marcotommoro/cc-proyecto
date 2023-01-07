@@ -36,22 +36,28 @@ const routes = async (fastify: FastifyInstance, options: Object) => {
   );
 
   fastify.post(
-    "/change-observer-setting",
+    "/change-observer-settings",
     async (request: FastifyRequest, reply: FastifyReply) => {
       try {
         const {
           uppercase,
-          stringBefore,
-          stringAfter,
+          beforeText,
+          afterText,
           reverse,
         }: {
           uppercase: boolean;
-          stringBefore: string;
-          stringAfter: string;
+          beforeText: string;
+          afterText: string;
           reverse: boolean;
         } = request.body as any;
 
-        setObserverSettings({ uppercase, stringBefore, stringAfter, reverse });
+        await setObserverSettings({
+          uppercase,
+          beforeText,
+          afterText,
+          reverse,
+        });
+        fastify.log.info("Settings updated");
 
         return reply.code(200).send({ msg: "Settings updated" });
       } catch (error) {

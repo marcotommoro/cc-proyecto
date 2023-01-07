@@ -97,6 +97,8 @@ services:
     restart: always
     ports:
       - 3000:3000
+    environment:
+      NEXT_PUBLIC_BROKER_URL: http://broker:5001
     depends_on:
       - keycloak
       - observer
