@@ -1,4 +1,4 @@
-version: "3.7"
+version: '3.7'
 
 services:
   kafka:
@@ -6,7 +6,7 @@ services:
     restart: always
     image: confluentinc/cp-kafka:latest
     ports:
-      - "9092:9092"
+      - '9092:9092'
     environment:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -28,7 +28,7 @@ services:
     image: mongo:latest
     container_name: mongodb
     ports:
-      - "27017:27017"
+      - '27017:27017'
     env_file:
       - ./envs/.env.mongodb
     volumes:
@@ -62,7 +62,7 @@ services:
     env_file:
       - ./envs/.env.keycloak
     ports:
-      - "8080:8080"
+      - '8080:8080'
     command: start-dev
 
   pgadmin:
@@ -131,3 +131,13 @@ services:
       - ./envs/.env.mongo-client
     volumes:
       - ./broker:/app
+  minio:
+    image: minio/minio
+    container_name: minio
+    command: server /data
+    ports:
+      - '9000:9000'
+    env_file:
+      - ./envs/.env.minio
+    volumes:
+      - ./minio_data:/data
