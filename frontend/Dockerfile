@@ -2,6 +2,7 @@ FROM node
 
 WORKDIR /app
 
+COPY . .
+
 RUN yarn
-RUN yarn global add next
 CMD ["yarn", "dev"]

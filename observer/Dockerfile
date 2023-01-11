@@ -1,6 +1,7 @@
 FROM node
 RUN mkdir /app
 WORKDIR /app
-RUN npm install -g ts-node
-RUN yarn install
+COPY . .
+RUN yarn global add ts-node
+RUN yarn
 CMD ["yarn", "start"]

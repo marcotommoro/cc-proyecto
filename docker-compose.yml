@@ -98,7 +98,8 @@ services:
       - keycloak
       - observer
     volumes:
-      - ./frontend:/app
+      - ./frontend/pages:/app/pages
+      - ./frontend/components:/app/components
 
   observer:
     container_name: observer
@@ -110,7 +111,7 @@ services:
       - ./envs/.env.mongodb
       - ./envs/.env.mongo-client
     volumes:
-      - ./observer:/app
+      - ./observer/src:/app/src
 
   broker:
     container_name: broker
@@ -125,7 +126,7 @@ services:
       - ./envs/.env.broker
       - ./envs/.env.mongo-client
     volumes:
-      - ./broker:/app
+      - ./broker/src:/app/src
   minio:
     image: minio/minio
     container_name: minio
