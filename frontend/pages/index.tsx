@@ -7,7 +7,7 @@ export default function Home() {
           Go to profilee
         </a>
         <img
-          src='http://localhost:9000/mybucket/background'
+          src={`http://${'127.0.0.1'}:9000/mybucket/background`}
           alt='nextjs'
           width={800}
         />

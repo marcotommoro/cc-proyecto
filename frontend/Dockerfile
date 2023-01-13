@@ -1,8 +1,8 @@
-FROM node
+FROM node:18
 
 WORKDIR /app
 
-COPY . .
+# COPY . .
 
-RUN yarn
+# RUN yarn
 CMD ["yarn", "dev"]

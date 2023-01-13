@@ -10,28 +10,39 @@ import { setObserverSettings } from '../utils/mongodb';
  */
 
 const routes = async (fastify: FastifyInstance, options: Object) => {
+  fastify.addHook('preHandler', async (request, reply) => {
+    fastify.log.info('PREHANDLER');
+    // @ts-ignore
+    request.locals = {};
+
+    if (!request.headers.authorization)
+      return reply
+        .code(404)
+        .send({ error: 'Bad request. Miss authorization bearer token' });
+
+    let user: any;
+
+    try {
+      user = await validateToken(request.headers.authorization);
+      fastify.log.info(user);
+    } catch (error) {
+      fastify.log.error('ciao' + error);
+      return reply.code(500).send({ error: `Server error: ${error}` });
+    }
+
+    if (!user || !user.active) {
+      return reply.code(403).send({ error: 'Unauthorized' });
+    }
+
+    // @ts-ignore
+    request.locals = { user };
+  });
+
   fastify.post(
     '/check-user',
     async (request: FastifyRequest, reply: FastifyReply) => {
-      if (!request.headers.authorization)
-        return reply
-          .code(404)
-          .send({ error: 'Bad request. Miss authorization bearer token' });
-
-      let user: any;
-
-      try {
-        user = await validateToken(request.headers.authorization);
-        fastify.log.info(user);
-      } catch (error) {
-        fastify.log.error('ciao' + error);
-        return reply.code(500).send({ error: `Server error: ${error}` });
-      }
-
-      if (!user || !user.active) {
-        return reply.code(403).send({ error: 'Unauthorized' });
-      }
-
+      // @ts-ignore
+      const { user } = request.locals;
       return reply.code(200).send({ msg: `Hello Mr. ${user.name}` });
     },
   );

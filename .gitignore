@@ -5,3 +5,5 @@ postgres_keycloak_data
 *data
 .env*
 envs
+deploy.sh
+*.lock

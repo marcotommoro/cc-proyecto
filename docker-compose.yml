@@ -89,27 +89,34 @@ services:
   frontend:
     container_name: frontend
     build: ./frontend
+    # image: marcotommoro/cc-frontend:arm64
     restart: always
     ports:
       - 3000:3000
     environment:
-      NEXT_PUBLIC_BROKER_URL: http://broker:5001
+      KEYCLOAK_HOSTNAME: 'keycloak:8080'
+      BROKER_HOSTNAME: 'broker:5001'
+    env_file:
+      - ./envs/.env.common
     depends_on:
       - keycloak
       - observer
     volumes:
-      - ./frontend/pages:/app/pages
-      - ./frontend/components:/app/components
+      # - ./frontend/pages:/app/pages
+      # - ./frontend/components:/app/components
+      - ./frontend:/app
 
   observer:
     container_name: observer
-    build: ./observer
+    # build: ./observer
+    image: marcotommoro/cc-observer:arm64
     restart: always
     depends_on:
       - kafka
     env_file:
       - ./envs/.env.mongodb
       - ./envs/.env.mongo-client
+      - ./envs/.env.common
     volumes:
       - ./observer/src:/app/src
 
@@ -121,10 +128,13 @@ services:
       - 5001:5001
     depends_on:
       - kafka
+    environment:
+      KEYCLOAK_HOSTNAME: 'keycloak:8080'
     env_file:
       - ./envs/.env.mongodb
       - ./envs/.env.broker
       - ./envs/.env.mongo-client
+      - ./envs/.env.common
     volumes:
       - ./broker/src:/app/src
   minio:
@@ -137,3 +147,6 @@ services:
       - ./envs/.env.minio
     volumes:
       - ./minio_data:/data
+networks:
+  default:
+    driver: bridge

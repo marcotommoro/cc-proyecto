@@ -21,7 +21,7 @@ fastify.listen({ port: 5001, host: '0.0.0.0' }, function (err, address) {
     process.exit(1);
   }
   // Server is now listening on ${address}
-  fastify.log.info('ciao' + process.env.KEYCLOAK_HOSTNAME_PORT);
+  fastify.log.info('ciao' + process.env.KEYCLOAK_HOSTNAME);
 
   // initializeMongo(fastify);
 

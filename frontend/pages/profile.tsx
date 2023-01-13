@@ -1,6 +1,5 @@
 import axios from 'axios';
-import Keycloak from 'keycloak-js';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useAlert } from 'react-alert';
 import { FormSettings } from '../components/FormSettings';
 import { Spinner } from '../components/Spinner';
@@ -14,77 +13,32 @@ interface User {
 }
 
 export default function Profile() {
-  const [keycloak, setKeycloak] = useState<Keycloak>();
-  const [user, setUser] = useState<User | undefined>();
+  const [token, setToken] = useState('');
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ show: false, text: '' });
   const alert = useAlert();
+  const [username, setUsername] = useState('marcomoroni99@gmail.com');
+  const [password, setPassword] = useState('ciaociao');
 
-  useEffect(() => {
-    setTimeout(() => {
-      console.log('user', user);
-      if (!user) handleLogin();
-      console.log(user);
-    }, 1000);
-  }, []);
+  const { NEXT_PUBLIC_BROKER_HOSTNAME } = process.env;
 
-  useEffect(() => {
-    const _keycloak = new Keycloak(initOptions);
-
-    _keycloak
-      .init({
-        checkLoginIframe: false,
-        redirectUri: 'http://127.0.0.1:3000/profile/',
-      })
-      .then((auth) => {
-        if (!auth) {
-          console.log('Not authenticated');
-        } else {
-          console.log('Authenticated');
-          console.log(_keycloak);
-          _keycloak.loadUserInfo().then((userInfo) => {
-            setUser({
-              authenticated: true,
-              // @ts-ignore
-              email: userInfo.email,
-              // @ts-ignore
-              name: userInfo.given_name,
-              token: _keycloak.idToken,
-            });
-            console.log(_keycloak.idToken);
-          });
-        }
+  const handleLogin = async () => {
+    try {
+      const { data } = await axios.post('/api/auth/get-token', {
+        username,
+        password,
       });
-
-    setInterval(async () => {
-      const res = await _keycloak.updateToken(70);
-      if (!res) return;
-      console.log('Token refreshed');
-      // @ts-ignore
-      setUser({ ...user, token: _keycloak.idToken });
-    }, 7000);
-
-    setKeycloak(_keycloak);
-  }, [user]);
-
-  const handleLogin = () => {
-    console.log('login', keycloak);
-    if (!keycloak) return;
-    keycloak.login();
+      setToken(data.access_token);
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const authConnection = async () => {
     try {
       setLoading(true);
-      await axios.post(
-        'http://127.0.0.1:5001/auth/check-user',
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${user?.token}`,
-          },
-        },
-      );
+      await axios.post('/api/auth/check-auth');
       alert.success('Auth connection successful.');
     } catch (error) {
       alert.error('Auth connection failed.');
@@ -96,8 +50,7 @@ export default function Profile() {
   };
 
   const handleLogOut = () => {
-    if (!keycloak) return;
-    keycloak.logout({ redirectUri: 'http://127.0.0.1:3000/' });
+    setToken('');
   };
 
   return (
@@ -114,10 +67,24 @@ export default function Profile() {
 
       <div className='p-3'>
         <h1 className='text-5xl font-bold text-center mb-9'>PROFILE</h1>
-        {!user || !user.token ? (
-          <button className='p-3 text-2xl bg-blue-500' onClick={handleLogin}>
-            LOGIN
-          </button>
+        {!token ? (
+          <div>
+            <input
+              type='text'
+              placeholder='email'
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+            <input
+              type='password'
+              placeholder='password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button className='p-3 text-2xl bg-blue-500' onClick={handleLogin}>
+              LOGIN
+            </button>
+          </div>
         ) : (
           <>
             <FormSettings />
@@ -143,11 +110,3 @@ export default function Profile() {
     </>
   );
 }
-
-// server side rendering
-
-let initOptions = {
-  url: 'http://127.0.0.1:8080',
-  realm: 'realm_app',
-  clientId: 'next-app',
-};

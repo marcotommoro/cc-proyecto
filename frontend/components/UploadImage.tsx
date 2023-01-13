@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { useState } from 'react';
+import { useAlert } from 'react-alert';
 
 export const UploadImage = () => {
   // form upload image
+  const alert = useAlert();
 
   const [file, setFile] = useState<File | null>(null);
 
@@ -10,16 +12,15 @@ export const UploadImage = () => {
     e.preventDefault();
     const formData = new FormData();
     formData.append('file', file!);
-    const { data } = await axios.post(
-      'http://127.0.0.1:5001/auth/upload-background',
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      },
-    );
-    console.log(data);
+
+    try {
+      await axios.post('/api/auth/upload-image', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      alert.show('Successfully uploaded', { type: 'success' });
+    } catch (error) {
+      alert.show('Upload failed.', { type: 'error' });
+    }
   };
 
   return (

@@ -1,8 +1,8 @@
-import axios from "axios";
-import qs from "qs";
+import axios from 'axios';
+import qs from 'qs';
 
 export const validateToken = async (token: string) => {
-  token = token.replace("Bearer ", "");
+  token = token.replace('Bearer ', '');
 
   const body = qs.stringify({
     token,
@@ -12,10 +12,10 @@ export const validateToken = async (token: string) => {
   });
 
   var config = {
-    method: "post",
-    url: `http://${process.env.KEYCLOAK_HOSTNAME_PORT}/realms/realm_app/protocol/openid-connect/token/introspect`,
+    method: 'post',
+    url: `http://${process.env.KEYCLOAK_HOSTNAME}/realms/realm_app/protocol/openid-connect/token/introspect`,
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
     data: body,
   };
