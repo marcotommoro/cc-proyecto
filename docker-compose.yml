@@ -35,7 +35,6 @@ services:
       - 2181:2181
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
-
   mongodb:
     image: mongo:latest
     container_name: mongodb
@@ -96,6 +95,8 @@ services:
     environment:
       KEYCLOAK_HOSTNAME: 'keycloak:8080'
       BROKER_HOSTNAME: 'broker:5001'
+      BROKER_HOSTNAME_EXTERNAL: '127.0.0.1:5001'
+
     env_file:
       - ./envs/.env.common
     depends_on:
@@ -135,10 +136,11 @@ services:
       - ./envs/.env.broker
       - ./envs/.env.mongo-client
       - ./envs/.env.common
+      - ./envs/.env.minio
     volumes:
       - ./broker/src:/app/src
   minio:
-    image: minio/minio
+    image: minio/minio:latest
     container_name: minio
     command: server /data
     ports:
@@ -147,6 +149,3 @@ services:
       - ./envs/.env.minio
     volumes:
       - ./minio_data:/data
-networks:
-  default:
-    driver: bridge

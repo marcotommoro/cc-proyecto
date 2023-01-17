@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "@types/qs": "^6.9.7",
-    "cookies-next": "^2.1.1",
-    "qs": "^6.11.0"
-  }
-}

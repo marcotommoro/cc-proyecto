@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 import axios from 'axios';
 import { getCookie } from 'cookies-next';
+import { IncomingForm } from 'formidable';
 
 type Data = {
   name: string;
@@ -23,11 +24,26 @@ export default async function handler(
   const { BROKER_HOSTNAME } = process.env;
   const bearerToken = getCookie('keycloak_access_token', { req, res });
 
-  const formData = req.body;
+  const form = new IncomingForm();
+  const formData = new FormData();
 
-  // if (!formData) return res.status(400).send('Bad request');
+  const files = await new Promise((resolve, reject) => {
+    form.parse(req, function (err, fields, files) {
+      if (err) {
+        reject(err);
+        return;
+      }
+      console.log(
+        'within form.parse method, subject field of fields object is: ',
+      );
+      resolve(files);
+    }); // form.parse
+  });
 
-  // console.log(formData);
+  // console.log('ret', files['file']);
+  formData.append('file', files['file']);
+  console.log(req.headers);
+
   try {
     const { data } = await axios.post(
       `http://${BROKER_HOSTNAME}/auth/upload-background`,
@@ -35,7 +51,7 @@ export default async function handler(
       {
         headers: {
           Authorization: `Bearer ${bearerToken}`,
-          'Content-Type': `multipart/form-data`,
+          'Content-Type': req.headers['content-type'],
         },
       },
     );

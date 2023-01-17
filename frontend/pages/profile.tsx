@@ -38,8 +38,8 @@ export default function Profile() {
   const authConnection = async () => {
     try {
       setLoading(true);
-      await axios.post('/api/auth/check-auth');
-      alert.success('Auth connection successful.');
+      const { data } = await axios.post('/api/auth/check-auth');
+      alert.success(`${data.msg}`);
     } catch (error) {
       alert.error('Auth connection failed.');
     } finally {
@@ -93,13 +93,14 @@ export default function Profile() {
 
             <div className='flex justify-center flex-grow gap-32 my-5'>
               <button
-                className='flex justify-center w-48 p-3 text-center bg-yellow-600'
+                className='flex justify-center p-3 text-center uppercase bg-yellow-600'
                 disabled={loading}
                 onClick={authConnection}
               >
                 {loading ? <Spinner /> : <>Check auth connection</>}
               </button>
-
+            </div>
+            <div className='flex justify-center'>
               <button className='p-3 bg-red-700 ' onClick={handleLogOut}>
                 LOGOUT
               </button>

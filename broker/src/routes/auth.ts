@@ -2,7 +2,6 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { validateToken } from '../utils/keycloak';
 import { uploadFile } from '../utils/minio';
 import { setObserverSettings } from '../utils/mongodb';
-
 /**
  * Encapsulates the routes
  * @param {FastifyInstance} fastify  Encapsulated Fastify Instance
@@ -79,9 +78,15 @@ const routes = async (fastify: FastifyInstance, options: Object) => {
   );
 
   fastify.post('/upload-background', async (request: FastifyRequest, reply) => {
-    const data = await request.file();
+    try {
+      // @ts-ignore
+      const data = await request.file();
 
-    await uploadFile(data);
+      await uploadFile(data);
+    } catch (error) {
+      console.log(error);
+    }
+    fastify.log.info('Upload background done');
 
     return reply.code(200).send({ msg: 'Backgournd' });
   });

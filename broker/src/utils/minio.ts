@@ -1,19 +1,16 @@
 import fs from 'fs';
 import { Client } from 'minio';
-import util from 'util';
+import pump from 'pump';
 let minioClient: Client;
-
-import { pipeline } from 'stream';
-
-const pump = util.promisify(pipeline);
+// const pump = util.promisify(pipeline);
 
 export const initializeMinio = async () => {
   minioClient = new Client({
     endPoint: 'minio',
     port: 9000,
     useSSL: false,
-    accessKey: 'root',
-    secretKey: '6fd37861-d2a9-4aa3-8a1f-52559367223a',
+    accessKey: process.env.MINIO_ROOT_USER || 'root',
+    secretKey: process.env.MINIO_ROOT_PASSWORD || '',
   });
 };
 
@@ -21,7 +18,9 @@ export const uploadFile = async (file: any) => {
   // CHECK IF BUCKET EXISTS
 
   const bucketExists = await minioClient.bucketExists('mybucket');
+
   if (!bucketExists) {
+    console.log('Bucket does not exist, creating it...');
     await minioClient.makeBucket('mybucket', 'us-east-1');
     await minioClient.setBucketPolicy(
       'mybucket',
@@ -31,14 +30,15 @@ export const uploadFile = async (file: any) => {
 
   //get file extension
   const fileExtension = file.filename.split('.').pop();
-  const filename = `tmp/backgorund.${fileExtension}`;
+  const filename = `tmp/background.${fileExtension}`;
+  //delete file if exists
+  if (fs.existsSync(filename)) fs.unlinkSync(filename);
 
   await pump(file.file, fs.createWriteStream(filename));
 
-  console.log(file);
+  await minioClient.removeObject('mybucket', 'background');
 
-  const e = await minioClient.fPutObject('mybucket', 'background', filename);
-  console.log(e);
+  await minioClient.fPutObject('mybucket', 'background', filename);
 };
 
 const READONLY_POLICY = {

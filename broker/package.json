@@ -12,6 +12,7 @@
     "@fastify/multipart": "^7.3.0",
     "@types/minio": "^7.0.15",
     "@types/node": "^18.11.18",
+    "@types/pump": "^1.1.1",
     "@types/qs": "^6.9.7",
     "axios": "^1.2.2",
     "fastify": "^4.11.0",
@@ -20,6 +21,7 @@
     "minio": "^7.0.32",
     "mongodb": "^4.13.0",
     "nodemon": "^2.0.20",
+    "pump": "^3.0.0",
     "qs": "^6.11.0",
     "ts-node": "^10.9.1"
   },
