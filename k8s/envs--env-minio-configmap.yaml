@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  MINIO_ROOT_PASSWORD: 6fd37861-d2a9-4aa3-8a1f-52559367223a
+  MINIO_ROOT_USER: root
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: broker-envs--env-minio
+  name: envs--env-minio

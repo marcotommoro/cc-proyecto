@@ -6,8 +6,8 @@ let minioClient: Client;
 
 export const initializeMinio = async () => {
   minioClient = new Client({
-    endPoint: 'minio',
-    port: 9000,
+    endPoint: process.env.MINIO_HOSTNAME || '0.minioclient',
+    port: 80,
     useSSL: false,
     accessKey: process.env.MINIO_ROOT_USER || 'root',
     secretKey: process.env.MINIO_ROOT_PASSWORD || '',

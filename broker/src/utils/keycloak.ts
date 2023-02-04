@@ -13,7 +13,7 @@ export const validateToken = async (token: string) => {
 
   var config = {
     method: 'post',
-    url: `http://${process.env.KEYCLOAK_HOSTNAME}/realms/realm_app/protocol/openid-connect/token/introspect`,
+    url: `${process.env.KEYCLOAK_HOSTNAME}/realms/realm_app/protocol/openid-connect/token/introspect`,
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },

@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  KEYCLOAK_CLIENT_ID: backend-app
+  KEYCLOAK_CLIENT_SECRET: ah0btzXrewoBWV1hN92c0xhPNM03xa8Q
+  KEYCLOAK_USERNAME: user_app
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: broker-envs--env-broker
+  name: envs--env-broker

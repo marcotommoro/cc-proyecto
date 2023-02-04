@@ -14,7 +14,7 @@ export default async function handler(
 ) {
   // @ts-ignore
   if (req.method !== 'POST') return res.status(405).send('Method not allowed');
-  const { BROKER_HOSTNAME } = process.env;
+  const { NEXT_PUBLIC_BROKER_HOSTNAME } = process.env;
   const bearerToken = getCookie('keycloak_access_token', { req, res });
 
   const { data } = req.body;
@@ -22,8 +22,9 @@ export default async function handler(
   if (!data) res.status(400).send('Bad request');
 
   try {
+    console.log(NEXT_PUBLIC_BROKER_HOSTNAME);
     await axios.post(
-      `http://${BROKER_HOSTNAME}/auth/change-observer-settings`,
+      `${NEXT_PUBLIC_BROKER_HOSTNAME}/auth/change-observer-settings`,
       {
         ...data,
       },
@@ -35,6 +36,7 @@ export default async function handler(
     );
     res.status(200).json({ message: 'Settings updated' });
   } catch (error) {
+    console.log(error);
     res.status(401).json({ message: 'Unauthorized' });
   }
 }

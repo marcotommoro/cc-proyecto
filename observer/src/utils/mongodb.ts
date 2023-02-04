@@ -32,7 +32,7 @@ export const initializeMongo = async () => {
 
   // @ts-ignore
   const client = new MongoClient(
-    `mongodb://${MONGO_USER}:${MONGO_PASSWD}@${MONGO_HOSTNAME}:27017/${MONGO_DB}?${MONGO_PARAMS}`,
+    `mongodb://${MONGO_USER}:${MONGO_PASSWD}@${MONGO_HOSTNAME}/${MONGO_DB}?${MONGO_PARAMS}`,
   );
 
   try {

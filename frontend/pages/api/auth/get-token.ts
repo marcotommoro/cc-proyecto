@@ -16,7 +16,7 @@ export default async function handler(
 ) {
   // @ts-ignore
   if (req.method !== 'POST') return res.status(405).send('Method not allowed');
-  const { KEYCLOAK_HOSTNAME } = process.env;
+  const { NEXT_PUBLIC_KEYCLOAK_HOSTNAME } = process.env;
 
   const { username, password } = req.body;
 
@@ -29,9 +29,11 @@ export default async function handler(
     password: password,
   });
 
+  console.log(data);
+
   const config = {
     method: 'post',
-    url: `http://${KEYCLOAK_HOSTNAME}/realms/realm_app/protocol/openid-connect/token`,
+    url: `https://auth.vera.kumori.cloud/realms/realm_app/protocol/openid-connect/token`,
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
@@ -46,6 +48,7 @@ export default async function handler(
     });
     res.status(200).json({ ...data2 });
   } catch (error) {
-    res.status(401).json({ message: 'Unauthorized' });
+    console.log(error);
+    res.status(401).json({ message: `Unauthorized ${error}` });
   }
 }

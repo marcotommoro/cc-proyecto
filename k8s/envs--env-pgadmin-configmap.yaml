@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  PGADMIN_DEFAULT_EMAIL: my@email.com
+  PGADMIN_DEFAULT_PASSWORD: mypass
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: pgadmin-envs--env-pgadmin
+  name: envs--env-pgadmin

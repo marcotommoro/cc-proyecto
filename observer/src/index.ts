@@ -8,7 +8,7 @@ const init = () => {
   try {
     kafka = new Kafka({
       clientId: 'observer',
-      brokers: ['kafka:9092'],
+      brokers: [process.env.KAFKA_BROKER_HOSTNAME],
     });
 
     producer = kafka.producer();

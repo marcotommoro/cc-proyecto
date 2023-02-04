@@ -18,16 +18,12 @@ export const UploadImage = () => {
         name: 'keycloak_access_token',
       });
 
-      await axios.post(
-        `http://${data.brokerUrl}/auth/upload-background`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${data.cookie}`,
-          },
+      await axios.post(`${data.brokerUrl}/auth/upload-background`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${data.cookie}`,
         },
-      );
+      });
       alert.show('Successfully uploaded', { type: 'success' });
     } catch (error) {
       alert.show('Upload failed.', { type: 'error' });

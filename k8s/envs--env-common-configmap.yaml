@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  CONTABO_DOMAIN: http://45.85.146.163
+  LOCALHOST_DOMAIN: http://localhost
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: broker-envs--env-common
+  name: envs--env-common

@@ -4,6 +4,7 @@ import Fastify from 'fastify';
 import anonymoutsRoutes from './routes/anonymous';
 import authRoutes from './routes/auth';
 import { initializeMinio } from './utils/minio';
+import { initializeMongo } from './utils/mongodb';
 
 const fastify = Fastify({
   logger: true,
@@ -23,7 +24,7 @@ fastify.listen({ port: 5001, host: '0.0.0.0' }, function (err, address) {
   // Server is now listening on ${address}
   fastify.log.info('ciao' + process.env.KEYCLOAK_HOSTNAME);
 
-  // initializeMongo(fastify);
+  initializeMongo(fastify);
 
   initializeMinio();
 });

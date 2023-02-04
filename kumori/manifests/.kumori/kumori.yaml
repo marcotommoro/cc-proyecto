@@ -1,0 +1,13 @@
+access-token: ""
+access-token-expiry-date: ""
+admission: ""
+admission-protocol: https
+config-version: "1.1"
+cue-command: cue
+diff-tool: internal
+docker-server: https://index.docker.io/v1/
+log-level: warn
+output: table
+refresh-token: ""
+refresh-token-expiry-date: ""
+user-domain: anonymous

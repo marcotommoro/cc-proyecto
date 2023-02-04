@@ -21,7 +21,7 @@ export default async function handler(
 ) {
   // @ts-ignore
   if (req.method !== 'POST') return res.status(405).send('Method not allowed');
-  const { BROKER_HOSTNAME } = process.env;
+  const { NEXT_PUBLIC_BROKER_HOSTNAME } = process.env;
   const bearerToken = getCookie('keycloak_access_token', { req, res });
 
   const form = new IncomingForm();
@@ -46,7 +46,7 @@ export default async function handler(
 
   try {
     const { data } = await axios.post(
-      `http://${BROKER_HOSTNAME}/auth/upload-background`,
+      `${NEXT_PUBLIC_BROKER_HOSTNAME}/auth/upload-background`,
       formData,
       {
         headers: {

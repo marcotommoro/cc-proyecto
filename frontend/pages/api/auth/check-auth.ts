@@ -14,12 +14,12 @@ export default async function handler(
 ) {
   // @ts-ignore
   if (req.method !== 'POST') return res.status(405).send('Method not allowed');
-  const { BROKER_HOSTNAME } = process.env;
+  const { NEXT_PUBLIC_BROKER_HOSTNAME } = process.env;
   const bearerToken = getCookie('keycloak_access_token', { req, res });
 
   try {
     const { data } = await axios.post(
-      `http://${BROKER_HOSTNAME}/auth/check-user`,
+      `https://server.vera.kumori.cloud/auth/check-user`,
       {},
       {
         headers: {
@@ -30,6 +30,8 @@ export default async function handler(
 
     res.status(200).json({ ...data });
   } catch (error) {
+    // @ts-ignore
+    console.log(error);
     res.status(401).json({ message: 'Unauthorized' });
   }
 }

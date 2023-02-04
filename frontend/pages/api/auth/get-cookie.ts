@@ -14,16 +14,23 @@ export default async function handler(
   try {
     // @ts-ignore
     if (req.method !== 'POST')
+      // @ts-ignore
+
       return res.status(405).send('Method not allowed');
 
     const { name } = req.body;
     const cookie = getCookie(name, { req, res });
 
-    return res
-      .status(200)
-      .json({ cookie, brokerUrl: process.env.BROKER_HOSTNAME_EXTERNAL });
+    return (
+      res
+        .status(200)
+        // @ts-ignore
+        .json({ cookie, brokerUrl: process.env.NEXT_PUBLIC_BROKER_HOSTNAME })
+    );
   } catch (error) {
     console.log(error);
+    // @ts-ignore
+
     return res.status(401).json({ message: 'Unauthorized' });
   }
 }

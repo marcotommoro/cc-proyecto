@@ -20,8 +20,6 @@ export default function Profile() {
   const [username, setUsername] = useState('marcomoroni99@gmail.com');
   const [password, setPassword] = useState('ciaociao');
 
-  const { NEXT_PUBLIC_BROKER_HOSTNAME } = process.env;
-
   const handleLogin = async () => {
     try {
       const { data } = await axios.post('/api/auth/get-token', {

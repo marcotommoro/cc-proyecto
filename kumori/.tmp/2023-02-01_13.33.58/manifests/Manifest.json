@@ -1,0 +1,523 @@
+{
+  "comment": "",
+  "cspec": "1.0",
+  "deployments": {
+    "main": {
+      "artifact": {
+        "description": {
+          "builtin": false,
+          "config": {
+            "parameter": {},
+            "resilience": 0,
+            "resource": {
+              "brokerdomain": {
+                "domain": "server"
+              },
+              "cert": {
+                "certificate": "cluster.core/wildcard-vera-kumori-cloud"
+              },
+              "mongovolume": {
+                "volume": {
+                  "kind": "storage",
+                  "size": 10,
+                  "unit": "G"
+                }
+              }
+            },
+            "scale": {
+              "detail": {
+                "broker": {
+                  "hsize": 1
+                },
+                "mongo": {
+                  "hsize": 1
+                }
+              }
+            }
+          },
+          "connector": {
+            "inboundconnector": {
+              "clients": [
+                {
+                  "channel": "broker_inbound.inbound",
+                  "role": "self"
+                }
+              ],
+              "kind": "lb",
+              "servers": [
+                {
+                  "links": [
+                    {
+                      "channel": "entrypoint",
+                      "role": "broker"
+                    }
+                  ],
+                  "meta": [
+                    {
+                      "auto": {
+                        "compRef": {
+                          "domain": "kumori.examples",
+                          "kind": "component",
+                          "module": "calccache",
+                          "name": "broker",
+                          "version": [
+                            3,
+                            0,
+                            7
+                          ]
+                        },
+                        "roleName": "broker"
+                      },
+                      "user": {}
+                    }
+                  ]
+                }
+              ]
+            },
+            "mongoconnector": {
+              "clients": [
+                {
+                  "channel": "mongoclient",
+                  "role": "broker"
+                }
+              ],
+              "kind": "lb",
+              "servers": [
+                {
+                  "links": [
+                    {
+                      "channel": "entrypoint",
+                      "role": "mongo"
+                    }
+                  ],
+                  "meta": [
+                    {
+                      "auto": {
+                        "compRef": {
+                          "domain": "kumori.examples",
+                          "kind": "component",
+                          "module": "calccache",
+                          "name": "mongo",
+                          "version": [
+                            3,
+                            0,
+                            7
+                          ]
+                        },
+                        "roleName": "mongo"
+                      },
+                      "user": {}
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "role": {
+            "broker": {
+              "artifact": {
+                "description": {
+                  "builtin": false,
+                  "code": {
+                    "broker": {
+                      "image": {
+                        "hub": {
+                          "name": "",
+                          "secret": ""
+                        },
+                        "tag": "marcotommoro/cc-broker:latest"
+                      },
+                      "mapping": {
+                        "env": {
+                          "KEYCLOAK_CLIENT_ID": {
+                            "value": "backend-app"
+                          },
+                          "KEYCLOAK_CLIENT_SECRET": {
+                            "value": "Jf5UhAu9SFltve3GuQhjl3DrskBJnJtp"
+                          },
+                          "KEYCLOAK_USERNAME": {
+                            "value": "user_app"
+                          },
+                          "MINIO_ROOT_PASSWORD": {
+                            "value": "6fd37861-d2a9-4aa3-8a1f-52559367223a"
+                          },
+                          "MINIO_ROOT_USER": {
+                            "value": "root"
+                          },
+                          "MONGO_COLLECTION": {
+                            "value": "observer-setting"
+                          },
+                          "MONGO_DB": {
+                            "value": "admin"
+                          },
+                          "MONGO_HOSTNAME": {
+                            "value": "set.0.mongo:27017"
+                          },
+                          "MONGO_PARAMS": {
+                            "value": "maxPoolSize=20\u0026w=majority\u0026authMechanism=DEFAULT"
+                          },
+                          "MONGO_PASSWD": {
+                            "value": "JGUEs5mDfEg54mC"
+                          },
+                          "MONGO_USER": {
+                            "value": "root"
+                          }
+                        },
+                        "filesystem": {}
+                      },
+                      "name": "broker",
+                      "size": {
+                        "cpu": {
+                          "kind": "cpu",
+                          "size": 2000,
+                          "unit": "m"
+                        },
+                        "memory": {
+                          "kind": "ram",
+                          "size": 2,
+                          "unit": "G"
+                        },
+                        "mincpu": 300
+                      }
+                    }
+                  },
+                  "config": {
+                    "parameter": {},
+                    "resilience": 0,
+                    "resource": {},
+                    "scale": {
+                      "hsize": 1
+                    }
+                  },
+                  "probe": {},
+                  "profile": {
+                    "iopsintensive": false,
+                    "threadability": "*"
+                  },
+                  "size": {
+                    "bandwidth": {
+                      "kind": "bandwidth",
+                      "size": 800,
+                      "unit": "M"
+                    },
+                    "minbandwidth": 800,
+                    "mincpu": {
+                      "kind": "cpu",
+                      "size": 300,
+                      "unit": "m"
+                    }
+                  },
+                  "srv": {
+                    "client": {
+                      "mongoclient": {
+                        "inherited": false,
+                        "protocol": "tcp"
+                      }
+                    },
+                    "duplex": {},
+                    "server": {
+                      "entrypoint": {
+                        "inherited": false,
+                        "port": 5001,
+                        "portnum": 1,
+                        "protocol": "http"
+                      }
+                    }
+                  }
+                },
+                "ref": {
+                  "domain": "kumori.examples",
+                  "kind": "component",
+                  "module": "calccache",
+                  "name": "broker",
+                  "version": [
+                    3,
+                    0,
+                    7
+                  ]
+                },
+                "spec": [
+                  1,
+                  0
+                ]
+              },
+              "config": {
+                "resilience": 0,
+                "resource": {},
+                "scale": {
+                  "hsize": 1
+                }
+              },
+              "name": "broker"
+            },
+            "mongo": {
+              "artifact": {
+                "description": {
+                  "builtin": false,
+                  "code": {
+                    "mongo": {
+                      "image": {
+                        "hub": {
+                          "name": "",
+                          "secret": ""
+                        },
+                        "tag": "mongo"
+                      },
+                      "mapping": {
+                        "env": {
+                          "MONGO_INITDB_DATABASE": {
+                            "value": "admin"
+                          },
+                          "MONGO_INITDB_ROOT_PASSWORD": {
+                            "value": "JGUEs5mDfEg54mC"
+                          },
+                          "MONGO_INITDB_ROOT_USERNAME": {
+                            "value": "root"
+                          },
+                          "MONGO_REPLICA_SET_NAME": {
+                            "value": "rs0"
+                          }
+                        },
+                        "filesystem": {}
+                      },
+                      "name": "mongo",
+                      "size": {
+                        "cpu": {
+                          "kind": "cpu",
+                          "size": 2000,
+                          "unit": "m"
+                        },
+                        "memory": {
+                          "kind": "ram",
+                          "size": 2,
+                          "unit": "G"
+                        },
+                        "mincpu": 300
+                      }
+                    }
+                  },
+                  "config": {
+                    "parameter": {},
+                    "resilience": 0,
+                    "resource": {
+                      "mongovolume": {
+                        "volume": {
+                          "kind": "storage",
+                          "size": 10,
+                          "unit": "G"
+                        }
+                      }
+                    },
+                    "scale": {
+                      "hsize": 1
+                    }
+                  },
+                  "probe": {},
+                  "profile": {
+                    "iopsintensive": false,
+                    "threadability": "*"
+                  },
+                  "size": {
+                    "bandwidth": {
+                      "kind": "bandwidth",
+                      "size": 800,
+                      "unit": "M"
+                    },
+                    "minbandwidth": 800,
+                    "mincpu": {
+                      "kind": "cpu",
+                      "size": 300,
+                      "unit": "m"
+                    }
+                  },
+                  "srv": {
+                    "client": {},
+                    "duplex": {},
+                    "server": {
+                      "entrypoint": {
+                        "inherited": false,
+                        "port": 27017,
+                        "portnum": 1,
+                        "protocol": "http"
+                      }
+                    }
+                  }
+                },
+                "ref": {
+                  "domain": "kumori.examples",
+                  "kind": "component",
+                  "module": "calccache",
+                  "name": "mongo",
+                  "version": [
+                    3,
+                    0,
+                    7
+                  ]
+                },
+                "spec": [
+                  1,
+                  0
+                ]
+              },
+              "config": {
+                "resilience": 0,
+                "resource": {
+                  "mongovolume": {
+                    "volume": {
+                      "kind": "storage",
+                      "size": 10,
+                      "unit": "G"
+                    }
+                  }
+                },
+                "scale": {
+                  "hsize": 1
+                }
+              },
+              "name": "mongo"
+            }
+          },
+          "srv": {
+            "client": {},
+            "duplex": {},
+            "server": {
+              "broker_inbound.inbound": {
+                "inherited": true,
+                "protocol": "http"
+              }
+            }
+          }
+        },
+        "ref": {
+          "domain": "kumori.examples",
+          "kind": "service",
+          "module": "calccache",
+          "name": "service_main",
+          "version": [
+            3,
+            0,
+            7
+          ]
+        },
+        "spec": [
+          1,
+          0
+        ]
+      },
+      "config": {
+        "parameter": {},
+        "resilience": 0,
+        "resource": {
+          "brokerdomain": {
+            "domain": "server"
+          },
+          "cert": {
+            "certificate": "cluster.core/wildcard-vera-kumori-cloud"
+          },
+          "mongovolume": {
+            "volume": {
+              "kind": "storage",
+              "size": 10,
+              "unit": "G"
+            }
+          }
+        },
+        "scale": {
+          "detail": {
+            "broker": {
+              "hsize": 1
+            },
+            "mongo": {
+              "hsize": 1
+            }
+          }
+        }
+      },
+      "meta": {},
+      "name": "main",
+      "up": null
+    },
+    "main.broker_inbound": {
+      "artifact": {
+        "description": {
+          "builtin": true,
+          "config": {
+            "parameter": {
+              "clientcert": false,
+              "type": "https",
+              "websocket": true
+            },
+            "resilience": 0,
+            "resource": {
+              "servercert": {
+                "certificate": "cluster.core/wildcard-vera-kumori-cloud"
+              },
+              "serverdomain": {
+                "domain": "server"
+              }
+            },
+            "scale": {}
+          },
+          "srv": {
+            "client": {
+              "inbound": {
+                "inherited": false,
+                "protocol": "http"
+              }
+            },
+            "duplex": {},
+            "server": {}
+          }
+        },
+        "ref": {
+          "domain": "kumori.systems",
+          "kind": "service",
+          "module": "builtins/inbound",
+          "name": "inbound",
+          "version": [
+            1,
+            1,
+            0
+          ]
+        },
+        "spec": [
+          1,
+          0
+        ]
+      },
+      "config": {
+        "parameter": {},
+        "resilience": 0,
+        "resource": {
+          "servercert": {
+            "certificate": "cluster.core/wildcard-vera-kumori-cloud"
+          },
+          "serverdomain": {
+            "domain": "server"
+          }
+        },
+        "scale": {}
+      },
+      "meta": {},
+      "name": "main.broker_inbound",
+      "up": "main"
+    }
+  },
+  "links": [
+    {
+      "meta": {
+        "meta": {}
+      },
+      "s_c": "inbound",
+      "s_d": "main.broker_inbound",
+      "t_c": "broker_inbound.inbound",
+      "t_d": "main"
+    }
+  ],
+  "ref": {
+    "domain": "mmoroni",
+    "kind": "solution",
+    "name": "main"
+  },
+  "top": "main"
+}
