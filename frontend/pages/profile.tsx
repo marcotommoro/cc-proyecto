@@ -66,20 +66,28 @@ export default function Profile() {
       <div className='p-3'>
         <h1 className='text-5xl font-bold text-center mb-9'>PROFILE</h1>
         {!token ? (
-          <div>
+          <div className='flex flex-col items-center'>
+            <p className='p-3 mb-10 text-center border border-white w-96'>
+              To test the system use demo:demo
+            </p>
             <input
               type='text'
               placeholder='email'
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              className='p-2 text-center w-80'
             />
             <input
               type='password'
               placeholder='password'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className='p-2 mt-2 text-center w-80'
             />
-            <button className='p-3 text-2xl bg-blue-500' onClick={handleLogin}>
+            <button
+              className='p-3 mt-3 text-2xl bg-blue-500 w-80'
+              onClick={handleLogin}
+            >
               LOGIN
             </button>
           </div>
