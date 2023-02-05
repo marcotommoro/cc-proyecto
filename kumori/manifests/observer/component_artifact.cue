@@ -8,6 +8,7 @@ package component
     srv: {
       server: web: port: _
       client: mongoclient: protocol: "tcp"
+      client: kafkaclient: protocol: _
     }
 
     config: {
@@ -37,7 +38,7 @@ package component
           MONGO_PASSWD: value: "JGUEs5mDfEg54mC"
           MONGO_PARAMS: value: "maxPoolSize=20&w=majority&authMechanism=DEFAULT"
           MONGO_COLLECTION: value: "observer-setting"
-          KAFKA_BROKER_HOSTNAME: value: "kafkabroker.vera.kumori.cloud:80"
+          KAFKA_BROKER_HOSTNAME: value: "0.kafkaclient:80"
         }
       }
 

@@ -8,22 +8,32 @@ import (
   mi ".../minio:component"
   fe ".../frontend:component"
   ob ".../observer:component"
+
+  kui ".../kafkaui:component"
+  kf ".../kafka:component"
+  z ".../zookeeper:component"
 )
 
 #Artifact: {
   ref: name:  "service_main"
 
   description: {
+    srv: server: discover: {port: 9092, protocol: "tcp"}
     config:{
       resource:{
         brokerdomain: k.#Domain
         miniodomain: k.#Domain
         frontenddomain: k.#Domain
-
         cert: k.#Certificate
-
         mongovolume: k.#Volume
         miniovolume: k.#Volume
+
+        kafkauidomain: k.#Domain
+        zookeepervolume: k.#Volume
+        kafkavolume: k.#Volume
+
+        keycloak_client_secret: k.#Secret
+        minio_root_password: k.#Secret
       }
     }
     role: {
@@ -42,6 +52,8 @@ import (
         }
       }
 
+
+      // Inbounds
       minio_inbound: {
         artifact: i.#Artifact
         config: {
@@ -72,6 +84,24 @@ import (
         }
       }
 
+      kafkauinbound: {
+        artifact: i.#Artifact
+        config: {
+          parameter: {
+            type: "https"
+            websocket: true
+          }
+          resource: {
+            servercert: description.config.resource.cert
+            serverdomain: description.config.resource.kafkauidomain
+          }
+          resilience: description.config.resilience
+        }
+      }
+
+
+
+      // Services
       minio:{
         artifact: mi.#Artifact
         config: {
@@ -91,7 +121,6 @@ import (
         }
       }
 
-
       observer: {
         artifact: ob.#Artifact
         config: {
@@ -105,6 +134,8 @@ import (
         artifact: b.#Artifact
         config: {
             resource: {
+              keycloak_client_secret: description.config.resource.keycloak_client_secret
+              minio_root_password: description.config.resource.minio_root_password
             }
             resilience: description.config.resilience
         }
@@ -119,6 +150,33 @@ import (
             resilience: description.config.resilience
         }
       }
+
+
+      // NEW
+      kafkaui:{
+        artifact: kui.#Artifact
+        config: {
+        }
+      }
+
+      kafka:{
+        artifact: kf.#Artifact
+        config: {
+            resource: {
+                kafkavolume: description.config.resource.kafkavolume
+            }
+        }
+      }
+
+      zookeeper:{
+        artifact: z.#Artifact
+        config: {
+            resource: {
+                zookeepervolume: description.config.resource.zookeepervolume
+            }
+        }
+      }
+
 
     }
 
@@ -160,6 +218,34 @@ import (
         from: broker: "minioclient"
         to: minio: "entrypoint": _
       }
+
+      // NEW
+
+      kafkauinboundconnector:{
+        as: "lb"
+		    from: kafkauinbound: "inbound"
+        to: kafkaui: "web": _
+      }
+
+      zookeeperconnector: {
+        as: "lb"
+        from: kafka: "zookeeperclient"
+        to: zookeeper: "zookeepermain": _
+      }
+
+      kafkaconnector: {
+        as: "lb"
+        from: self: "discover"
+        from: kafkaui: "kafkaclient"
+        from: observer: "kafkaclient"
+        to: kafka: "advertised": _
+      }
+
+      // observerkafkaconnector:{
+      //   as: "lb"
+      //   from: observer: "kafkaclient"
+      //   to:
+      // }
 
     }
   }

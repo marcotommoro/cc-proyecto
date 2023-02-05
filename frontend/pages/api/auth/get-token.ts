@@ -33,7 +33,7 @@ export default async function handler(
 
   const config = {
     method: 'post',
-    url: `https://auth.vera.kumori.cloud/realms/realm_app/protocol/openid-connect/token`,
+    url: `${NEXT_PUBLIC_KEYCLOAK_HOSTNAME}/realms/realm_app/protocol/openid-connect/token`,
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },

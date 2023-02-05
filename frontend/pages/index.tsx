@@ -11,7 +11,7 @@ export default function Home() {
         <img
           src={`${process.env.NEXT_PUBLIC_S3_HOSTNAME}/mybucket/background`}
           alt='nextjs'
-          width={800}
+          width={300}
         />
       </div>
     </>

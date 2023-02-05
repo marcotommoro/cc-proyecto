@@ -19,7 +19,7 @@ export default async function handler(
 
   try {
     const { data } = await axios.post(
-      `https://server.vera.kumori.cloud/auth/check-user`,
+      `${NEXT_PUBLIC_BROKER_HOSTNAME}/auth/check-user`,
       {},
       {
         headers: {

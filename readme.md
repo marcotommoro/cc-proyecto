@@ -4,6 +4,16 @@ The "MJM Cloud Computing Project" is a cloud-based solution that provides severa
 !["deployment"](deployment.png "Ciao")
 
 ---
+
+## **Online demo**
+The online demo is available at:
+- Frontend https://web.vera.kumori.cloud
+- Broker https://server.vera.kumori.cloud
+- Keycloak https://auth.vera.kumori.cloud
+- KafkaUI https://kafkauiweb.vera.kumori.cloud
+
+---
+
 ## **FRONTEND**
 
 The Frontend section is a simple website that is built using the NextJS framework. The website is composed of 3 pages:
