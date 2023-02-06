@@ -17,8 +17,8 @@ export default function Profile() {
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ show: false, text: '' });
   const alert = useAlert();
-  const [username, setUsername] = useState('marcomoroni99@gmail.com');
-  const [password, setPassword] = useState('ciaociao');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
     try {

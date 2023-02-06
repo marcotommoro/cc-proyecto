@@ -37,7 +37,7 @@ package component
           BROKER_HOSTNAME: value: "https://server.vera.kumori.cloud"
           BROKER_HOSTNAME_EXTERNAL: value: "server.vera.kumori.cloud"
           NEXT_PUBLIC_BROKER_HOSTNAME: value: "https://server.vera.kumori.cloud"
-          NEXT_PUBLIC_S3_HOSTNAME: value: "s3.vera.kumori.cloud"
+          NEXT_PUBLIC_S3_HOSTNAME: value: "https://s3.vera.kumori.cloud"
         }
       }
 
